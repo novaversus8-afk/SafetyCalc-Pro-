@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Invisible Grill Calculator & Billing</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,"Noto Sans Devanagari",sans-serif;
+  background:linear-gradient(135deg,#07111f,#0b3147,#071a29);
+  color:#fff;
+  min-height:100vh;
+}
+
+.container{
+  width:min(1050px,94%);
+  margin:auto;
+  padding:18px 0 50px;
+}
+
+.header{
+  text-align:center;
+  padding:25px 10px;
+}
+
+.header .logo{
+  font-size:48px;
+}
+
+.header h1{
+  font-size:clamp(27px,7vw,45px);
+  margin-top:5px;
+}
+
+.header p{
+  color:#b9cbd7;
+  margin-top:8px;
+}
+
+.card{
+  background:#ffffff0d;
+  border:1px solid #ffffff1c;
+  border-radius:24px;
+  padding:20px;
+  margin-top:18px;
+  box-shadow:0 15px 45px #0005;
+  backdrop-filter:blur(10px);
+}
+
+.card h2{
+  margin-bottom:18px;
+  font-size:21px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.field label{
+  display:block;
+  margin-bottom:7px;
+  font-weight:bold;
+  color:#dce8f0;
+}
+
+input{
+  width:100%;
+  border:0;
+  outline:0;
+  border-radius:13px;
+  padding:14px;
+  font-size:16px;
+  background:#fff;
+  color:#17202a;
+}
+
+.addBtn{
+  width:100%;
+  margin-top:17px;
+  padding:16px;
+  border:0;
+  border-radius:15px;
+  background:#00c853;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.addBtn:active{
+  transform:scale(.98);
+}
+
+.formula{
+  margin-top:15px;
+  padding:14px;
+  border-radius:14px;
+  background:#00695c;
+  line-height:1.7;
+}
+
+.tableBox{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  min-width:900px;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:11px 8px;
+  border-bottom:1px solid #ffffff18;
+  text-align:center;
+}
+
+th{
+  background:#ffffff12;
+  color:#dff4ff;
+}
+
+.actionBtn{
+  border:0;
+  padding:8px 10px;
+  border-radius:8px;
+  color:white;
+  cursor:pointer;
+  margin:2px;
+}
+
+.edit{
+  background:#1976d2;
+}
+
+.delete{
+  background:#e53935;
+}
+
+.summaryGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:13px;
+}
+
+.stat{
+  background:#ffffff0d;
+  border-radius:17px;
+  padding:17px;
+}
+
+.stat span{
+  display:block;
+  color:#aebfcb;
+  font-size:14px;
+}
+
+.stat strong{
+  display:block;
+  font-size:25px;
+  margin-top:7px;
+}
+
+.grand{
+  grid-column:1/-1;
+  text-align:center;
+  background:linear-gradient(135deg,#ff9800,#f4511e);
+}
+
+.grand strong{
+  font-size:40px;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+
+.actions button{
+  flex:1;
+  min-width:150px;
+  padding:14px;
+  border:0;
+  border-radius:13px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.printBtn{
+  background:white;
+  color:#111;
+}
+
+.clearBtn{
+  background:#e53935;
+  color:white;
+}
+
+.saveBtn{
+  background:#00c853;
+  color:white;
+}
+
+.note{
+  color:#aebdca;
+  font-size:13px;
+  margin-top:13px;
+  line-height:1.6;
+}
+
+.empty{
+  padding:25px;
+  text-align:center;
+  color:#9eb0bc;
+}
+
+
+/* PRINT */
+
+.printHeader{
+  display:none;
+}
+
+@media print{
+
+  body{
+    background:white;
+    color:#111;
+  }
+
+  .container{
+    width:100%;
+    padding:0;
+  }
+
+  .header{
+    color:#111;
+  }
+
+  .card{
+    background:white;
+    color:#111;
+    box-shadow:none;
+    border:1px solid #ccc;
+  }
+
+  .noPrint{
+    display:none !important;
+  }
+
+  .printHeader{
+    display:block;
+    text-align:center;
+    margin-bottom:15px;
+  }
+
+  table{
+    min-width:0;
+  }
+
+  th,td{
+    border:1px solid #aaa;
+    color:#111;
+  }
+
+  th{
+    background:#eee;
+  }
+
+  .stat{
+    background:#f5f5f5;
+    color:#111;
+  }
+
+  .grand{
+    background:#eee;
+  }
+
+  .grand strong{
+    color:#111;
+  }
+}
+
+
+@media(max-width:650px){
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .summaryGrid{
+    grid-template-columns:1fr;
+  }
+
+  .grand{
+    grid-column:auto;
+  }
+
+  .header .logo{
+    font-size:40px;
+  }
+}
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+  <header class="header">
+    <div class="logo">🛡️</div>
+    <h1>Invisible Grill</h1>
+    <p>Measurement • Sq.Ft Calculator • Billing</p>
+  </header>
+
+
+  <!-- CUSTOMER -->
+  <section class="card">
+
+    <h2>👤 Customer Details</h2>
+
+    <div class="grid">
+
+      <div class="field">
+        <label>Customer Name</label>
+        <input id="customerName" placeholder="ग्राहक का नाम">
+      </div>
+
+      <div class="field">
+        <label>Mobile Number</label>
+        <input id="customerMobile" type="tel" placeholder="मोबाइल नंबर">
+      </div>
+
+      <div class="field">
+        <label>Site / Address</label>
+        <input id="customerAddress" placeholder="साइट का पता">
+      </div>
+
+      <div class="field">
+        <label>Bill Number</label>
+        <input id="billNumber">
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- MEASUREMENT -->
+  <section class="card noPrint">
+
+    <h2>📐 Measurement Add करें</h2>
+
+    <div class="grid">
+
+      <div class="field">
+        <label>Area / Window Name</label>
+        <input id="areaName" placeholder="Window 1">
+      </div>
+
+      <div class="field">
+        <label>↔️ Width (Inch)</label>
+        <input id="width" type="number" step="0.01" placeholder="143">
+      </div>
+
+      <div class="field">
+        <label>📏 Length (Inch)</label>
+        <input id="length" type="number" step="0.01" placeholder="80">
+      </div>
+
+      <div class="field">
+        <label>📐 Height (Inch)</label>
+        <input id="height" type="number" step="0.01" placeholder="47">
+      </div>
+
+      <div class="field">
+        <label>🔢 Quantity</label>
+        <input id="quantity" type="number" min="1" value="1">
+      </div>
+
+      <div class="field">
+        <label>💰 Rate ₹ / Sq.Ft</label>
+        <input id="rate" type="number" min="0" step="0.01" placeholder="105">
+      </div>
+
+    </div>
+
+
+    <div class="formula">
+      <b>📌 Area Formula</b><br>
+      Sq.Ft = (Width × Height) ÷ 144<br>
+      Amount = Sq.Ft × Quantity × Rate
+    </div>
+
+
+    <button class="addBtn" onclick="addMeasurement()">
+      ➕ Measurement Add करें
+    </button>
+
+  </section>
+
+
+  <!-- RECORDS -->
+  <section class="card">
+
+    <div class="printHeader">
+      <h1>INVISIBLE GRILL QUOTATION</h1>
+      <p id="printCustomer"></p>
+      <p id="printMobile"></p>
+      <p id="printAddress"></p>
+      <p id="printBill"></p>
+    </div>
+
+    <h2>🧾 Measurement & Billing</h2>
+
+    <div class="tableBox">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>#</th>
+            <th>Area</th>
+            <th>Width</th>
+            <th>Length</th>
+            <th>Height</th>
+            <th>Qty</th>
+            <th>Sq.Ft</th>
+            <th>Rate</th>
+            <th>Amount</th>
+            <th class="noPrint">Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="measurementTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- BILL -->
+  <section class="card">
+
+    <h2>💰 Bill Summary</h2>
+
+    <div class="grid noPrint">
+
+      <div class="field">
+        <label>Discount ₹</label>
+        <input
+          id="discount"
+          type="number"
+          min="0"
+          value="0"
+          oninput="calculateBill()">
+      </div>
+
+      <div class="field">
+        <label>Extra Charge ₹</label>
+        <input
+          id="extraCharge"
+          type="number"
+          min="0"
+          value="0"
+          oninput="calculateBill()">
+      </div>
+
+    </div>
+
+
+    <div class="summaryGrid">
+
+      <div class="stat">
+        <span>Total Openings</span>
+        <strong id="totalOpenings">0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Total Square Feet</span>
+        <strong id="totalSqft">0.00 sq.ft</strong>
+      </div>
+
+      <div class="stat">
+        <span>Subtotal</span>
+        <strong id="subtotal">₹0.00</strong>
+      </div>
+
+      <div class="stat">
+        <span>Discount</span>
+        <strong id="discountDisplay">₹0.00</strong>
+      </div>
+
+      <div class="stat">
+        <span>Extra Charge</span>
+        <strong id="extraDisplay">₹0.00</strong>
+      </div>
+
+      <div class="stat grand">
+        <span>💵 GRAND TOTAL</span>
+        <strong id="grandTotal">₹0.00</strong>
+      </div>
+
+    </div>
+
+
+    <div class="actions noPrint">
+
+      <button class="saveBtn" onclick="saveBill()">
+        💾 Save Bill
+      </button>
+
+      <button class="printBtn" onclick="printBill()">
+        🖨️ Print / PDF
+      </button>
+
+      <button class="clearBtn" onclick="clearBill()">
+        🗑️ Clear
+      </button>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<script>
+
+/* ==========================================
+   DATA
+========================================== */
+
+let measurements = [];
+
+let editIndex = -1;
+
+
+/* ==========================================
+   BILL NUMBER
+========================================== */
+
+document.getElementById("billNumber").value =
+"IG-" + Date.now().toString().slice(-6);
+
+
+/* ==========================================
+   NUMBER HELPER
+========================================== */
+
+function getNumber(id){
+
+  const value =
+    parseFloat(document.getElementById(id).value);
+
+  return Number.isFinite(value) ? value : 0;
+
+}
+
+
+/* ==========================================
+   MONEY
+========================================== */
+
+function money(value){
+
+  return "₹" + Number(value).toLocaleString(
+    "en-IN",
+    {
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    }
+  );
+
+}
+
+
+/* ==========================================
+   ADD MEASUREMENT
+========================================== */
+
+function addMeasurement(){
+
+  const name =
+    document.getElementById("areaName").value.trim()
+    || "Window " + (measurements.length + 1);
+
+  const width = getNumber("width");
+
+  const length = getNumber("length");
+
+  const height = getNumber("height");
+
+  let quantity = getNumber("quantity");
+
+  const rate = getNumber("rate");
+
+
+  if(width <= 0){
+
+    alert("Width डालें।");
+    return;
+
+  }
+
+
+  if(height <= 0){
+
+    alert("Height डालें।");
+    return;
+
+  }
+
+
+  if(quantity < 1){
+
+    quantity = 1;
+
+  }
+
+
+  const item = {
+
+    name:name,
+
+    width:width,
+
+    length:length,
+
+    height:height,
+
+    quantity:quantity,
+
+    rate:rate
+
+  };
+
+
+  if(editIndex === -1){
+
+    measurements.push(item);
+
+  }else{
+
+    measurements[editIndex] = item;
+
+    editIndex = -1;
+
+  }
+
+
+  renderTable();
+
+  resetMeasurement();
+
+}
+
+
+/* ==========================================
+   CORRECT SQ FT FORMULA
+========================================== */
+
+function calculateSqFt(item){
+
+  /*
+    Width × Height ÷ 144
+
+    Example:
+    143 × 47 ÷ 144
+    = 46.673611 sq.ft
+  */
+
+  return (item.width * item.height) / 144;
+
+}
+
+
+/* ==========================================
+   RENDER TABLE
+========================================== */
+
+function renderTable(){
+
+  const table =
+    document.getElementById("measurementTable");
+
+  table.innerHTML = "";
+
+
+  if(measurements.length === 0){
+
+    table.innerHTML = `
+      <tr>
+        <td colspan="10" class="empty">
+          अभी कोई measurement add नहीं किया गया।
+        </td>
+      </tr>
+    `;
+
+    calculateBill();
+
+    return;
+
+  }
+
+
+  measurements.forEach((item,index)=>{
+
+    const sqft =
+      calculateSqFt(item);
+
+    const totalSqft =
+      sqft * item.quantity;
+
+    const amount =
+      totalSqft * item.rate;
+
+
+    const row =
+      document.createElement("tr");
+
+
+    row.innerHTML = `
+
+      <td>${index + 1}</td>
+
+      <td>${escapeHTML(item.name)}</td>
+
+      <td>${item.width.toFixed(2)}"</td>
+
+      <td>${item.length > 0
+        ? item.length.toFixed(2) + '"'
+        : "-"
+      }</td>
+
+      <td>${item.height.toFixed(2)}"</td>
+
+      <td>${item.quantity}</td>
+
+      <td>
+        <b>${totalSqft.toFixed(2)}</b>
+      </td>
+
+      <td>${money(item.rate)}</td>
+
+      <td>
+        <b>${money(amount)}</b>
+      </td>
+
+      <td class="noPrint">
+
+        <button
+          class="actionBtn edit"
+          onclick="editMeasurement(${index})">
+          Edit
+        </button>
+
+        <button
+          class="actionBtn delete"
+          onclick="deleteMeasurement(${index})">
+          Delete
+        </button>
+
+      </td>
+
+    `;
+
+
+    table.appendChild(row);
+
+  });
+
+
+  calculateBill();
+
+}
+
+
+/* ==========================================
+   BILL CALCULATION
+========================================== */
+
+function calculateBill(){
+
+  let totalSqft = 0;
+
+  let subtotal = 0;
+
+  let openings = 0;
+
+
+  measurements.forEach(item=>{
+
+    const sqft =
+      calculateSqFt(item);
+
+    const totalSqftForItem =
+      sqft * item.quantity;
+
+    const amount =
+      totalSqftForItem * item.rate;
+
+
+    totalSqft += totalSqftForItem;
+
+    subtotal += amount;
+
+    openings += item.quantity;
+
+  });
+
+
+  const discount =
+    getNumber("discount");
+
+  const extra =
+    getNumber("extraCharge");
+
+
+  let grand =
+    subtotal - discount + extra;
+
+
+  if(grand < 0){
+
+    grand = 0;
+
+  }
+
+
+  document.getElementById("totalOpenings")
+    .textContent = openings;
+
+
+  document.getElementById("totalSqft")
+    .textContent =
+    totalSqft.toFixed(2) + " sq.ft";
+
+
+  document.getElementById("subtotal")
+    .textContent =
+    money(subtotal);
+
+
+  document.getElementById("discountDisplay")
+    .textContent =
+    money(discount);
+
+
+  document.getElementById("extraDisplay")
+    .textContent =
+    money(extra);
+
+
+  document.getElementById("grandTotal")
+    .textContent =
+    money(grand);
+
+}
+
+
+/* ==========================================
+   EDIT
+========================================== */
+
+function editMeasurement(index){
+
+  const item =
+    measurements[index];
+
+
+  document.getElementById("areaName").value =
+    item.name;
+
+
+  document.getElementById("width").value =
+    item.width;
+
+
+  document.getElementById("length").value =
+    item.length;
+
+
+  document.getElementById("height").value =
+    item.height;
+
+
+  document.getElementById("quantity").value =
+    item.quantity;
+
+
+  document.getElementById("rate").value =
+    item.rate;
+
+
+  editIndex = index;
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* ==========================================
+   DELETE
+========================================== */
+
+function deleteMeasurement(index){
+
+  if(!confirm("यह measurement delete करें?")){
+
+    return;
+
+  }
+
+
+  measurements.splice(index,1);
+
+  renderTable();
+
+}
+
+
+/* ==========================================
+   RESET
+========================================== */
+
+function resetMeasurement(){
+
+  document.getElementById("areaName").value = "";
+
+  document.getElementById("width").value = "";
+
+  document.getElementById("length").value = "";
+
+  document.getElementById("height").value = "";
+
+  document.getElementById("quantity").value = "1";
+
+  document.getElementById("rate").value = "";
+
+}
+
+
+/* ==========================================
+   SAVE BILL
+========================================== */
+
+function saveBill(){
+
+  const data = {
+
+    customer:
+      document.getElementById("customerName").value,
+
+    mobile:
+      document.getElementById("customerMobile").value,
+
+    address:
+      document.getElementById("customerAddress").value,
+
+    bill:
+      document.getElementById("billNumber").value,
+
+    discount:
+      getNumber("discount"),
+
+    extra:
+      getNumber("extraCharge"),
+
+    measurements:
+      measurements
+
+  };
+
+
+  localStorage.setItem(
+    "InvisibleGrillBill",
+    JSON.stringify(data)
+  );
+
+
+  alert("✅ Bill आपके मोबाइल में save हो गया।");
+
+}
+
+
+/* ==========================================
+   LOAD SAVED BILL
+========================================== */
+
+function loadSavedBill(){
+
+  const saved =
+    localStorage.getItem("InvisibleGrillBill");
+
+
+  if(!saved){
+
+    return;
+
+  }
+
+
+  try{
+
+    const data =
+      JSON.parse(saved);
+
+
+    document.getElementById("customerName").value =
+      data.customer || "";
+
+
+    document.getElementById("customerMobile").value =
+      data.mobile || "";
+
+
+    document.getElementById("customerAddress").value =
+      data.address || "";
+
+
+    document.getElementById("billNumber").value =
+      data.bill || "";
+
+
+    document.getElementById("discount").value =
+      data.discount || 0;
+
+
+    document.getElementById("extraCharge").value =
+      data.extra || 0;
+
+
+    measurements =
+      Array.isArray(data.measurements)
+      ? data.measurements
+      : [];
+
+
+  }catch(e){
+
+    console.log(e);
+
+  }
+
+}
+
+
+/* ==========================================
+   CLEAR BILL
+========================================== */
+
+function clearBill(){
+
+  if(!confirm("पूरा bill clear करना है?")){
+
+    return;
+
+  }
+
+
+  measurements = [];
+
+  editIndex = -1;
+
+
+  document.getElementById("customerName").value = "";
+
+  document.getElementById("customerMobile").value = "";
+
+  document.getElementById("customerAddress").value = "";
+
+  document.getElementById("discount").value = 0;
+
+  document.getElementById("extraCharge").value = 0;
+
+
+  localStorage.removeItem("InvisibleGrillBill");
+
+
+  renderTable();
+
+}
+
+
+/* ==========================================
+   PRINT
+========================================== */
+
+function printBill(){
+
+  document.getElementById("printCustomer")
+    .textContent =
+    "Customer: " +
+    (document.getElementById("customerName").value || "-");
+
+
+  document.getElementById("printMobile")
+    .textContent =
+    "Mobile: " +
+    (document.getElementById("customerMobile").value || "-");
+
+
+  document.getElementById("printAddress")
+    .textContent =
+    "Address: " +
+    (document.getElementById("customerAddress").value || "-");
+
+
+  document.getElementById("printBill")
+    .textContent =
+    "Bill No: " +
+    (document.getElementById("billNumber").value || "-");
+
+
+  window.print();
+
+}
+
+
+/* ==========================================
+   SECURITY
+========================================== */
+
+function escapeHTML(text){
+
+  return String(text)
+
+    .replaceAll("&","&amp;")
+
+    .replaceAll("<","&lt;")
+
+    .replaceAll(">","&gt;")
+
+    .replaceAll('"',"&quot;")
+
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* ==========================================
+   START
+========================================== */
+
+loadSavedBill();
+
+renderTable();
+
+</script>
+
+</body>
+</html>
