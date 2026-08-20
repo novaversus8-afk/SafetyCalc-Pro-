@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Safety Measurement & Price Calculator</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,"Noto Sans Devanagari",sans-serif;
+  background:linear-gradient(135deg,#07111f,#102d47,#061d2d);
+  color:#fff;
+  min-height:100vh;
+}
+
+.container{
+  width:min(1000px,94%);
+  margin:auto;
+  padding:20px 0 50px;
+}
+
+.header{
+  text-align:center;
+  padding:25px 10px;
+}
+
+.header h1{
+  font-size:clamp(28px,6vw,48px);
+  margin-bottom:8px;
+}
+
+.header p{
+  color:#c8d8e8;
+}
+
+.box{
+  background:#ffffff10;
+  border:1px solid #ffffff20;
+  border-radius:25px;
+  padding:22px;
+  margin-top:18px;
+  box-shadow:0 15px 40px #0005;
+  backdrop-filter:blur(10px);
+}
+
+.title{
+  font-size:22px;
+  margin-bottom:17px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+
+.field label{
+  display:block;
+  margin-bottom:7px;
+  color:#dbe7f2;
+  font-weight:bold;
+}
+
+.field input,
+.field select{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #ffffff25;
+  outline:none;
+  background:#fff;
+  color:#17202a;
+  font-size:17px;
+}
+
+.calculate{
+  width:100%;
+  margin-top:18px;
+  padding:16px;
+  border:0;
+  border-radius:17px;
+  background:linear-gradient(135deg,#00c853,#00a844);
+  color:#fff;
+  font-size:19px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 8px 25px #00c85355;
+}
+
+.calculate:active{
+  transform:scale(.98);
+}
+
+.results{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  margin-top:20px;
+}
+
+.result{
+  background:#ffffff12;
+  border:1px solid #ffffff18;
+  border-radius:20px;
+  padding:18px;
+}
+
+.result small{
+  color:#b9c7d5;
+}
+
+.result strong{
+  display:block;
+  font-size:27px;
+  margin-top:7px;
+  color:#fff;
+}
+
+.total{
+  grid-column:1/-1;
+  background:linear-gradient(135deg,#ff9f00,#ff5e00);
+  text-align:center;
+}
+
+.total strong{
+  font-size:38px;
+}
+
+.breakdown{
+  margin-top:20px;
+  padding:17px;
+  border-radius:18px;
+  background:#0003;
+  line-height:2;
+  color:#e9f3fb;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+  flex-wrap:wrap;
+}
+
+.actions button{
+  flex:1;
+  min-width:150px;
+  padding:13px;
+  border:0;
+  border-radius:14px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.print{
+  background:#fff;
+  color:#18202b;
+}
+
+.reset{
+  background:#e74c3c;
+  color:#fff;
+}
+
+.note{
+  margin-top:15px;
+  color:#aebdca;
+  font-size:13px;
+  line-height:1.6;
+}
+
+@media(max-width:600px){
+
+  .grid,
+  .results{
+    grid-template-columns:1fr;
+  }
+
+  .total{
+    grid-column:auto;
+  }
+
+  .result strong{
+    font-size:25px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="header">
+  <h1>📐 Safety Measurement</h1>
+  <p>Inch → Feet → Square Feet → Price Calculator</p>
+</header>
+
+
+<!-- MEASUREMENT -->
+
+<section class="box">
+
+<h2 class="title">📏 Measurement डालें</h2>
+
+<div class="grid">
+
+<div class="field">
+<label>लंबाई (Inch)</label>
+<input
+  id="lengthInch"
+  type="number"
+  min="0"
+  step="0.01"
+  placeholder="जैसे 120">
+</div>
+
+<div class="field">
+<label>चौड़ाई (Inch)</label>
+<input
+  id="widthInch"
+  type="number"
+  min="0"
+  step="0.01"
+  placeholder="जैसे 60">
+</div>
+
+<div class="field">
+<label>रेट (₹ / Square Feet)</label>
+<input
+  id="rate"
+  type="number"
+  min="0"
+  step="0.01"
+  placeholder="जैसे 25">
+</div>
+
+<div class="field">
+<label>Quantity / कितने सेट</label>
+<input
+  id="quantity"
+  type="number"
+  min="1"
+  step="1"
+  value="1">
+</div>
+
+</div>
+
+
+<button class="calculate" onclick="calculate()">
+  🧮 Calculate करें
+</button>
+
+</section>
+
+
+<!-- RESULTS -->
+
+<section class="box">
+
+<h2 class="title">📊 Result</h2>
+
+<div class="results">
+
+<div class="result">
+<small>लंबाई</small>
+<strong id="lengthFeet">0 ft</strong>
+</div>
+
+<div class="result">
+<small>चौड़ाई</small>
+<strong id="widthFeet">0 ft</strong>
+</div>
+
+<div class="result">
+<small>एक पीस का Area</small>
+<strong id="area">0 sq.ft</strong>
+</div>
+
+<div class="result">
+<small>Total Area</small>
+<strong id="totalArea">0 sq.ft</strong>
+</div>
+
+<div class="result">
+<small>Rate</small>
+<strong id="rateShow">₹0</strong>
+</div>
+
+<div class="result">
+<small>Quantity</small>
+<strong id="quantityShow">0</strong>
+</div>
+
+<div class="result total">
+<small>💰 कुल कीमत</small>
+<strong id="totalPrice">₹0</strong>
+</div>
+
+</div>
+
+
+<div class="breakdown" id="breakdown">
+अभी measurement डालकर Calculate दबाएँ।
+</div>
+
+
+<div class="actions">
+
+<button class="print" onclick="window.print()">
+🖨️ Print / Save
+</button>
+
+<button class="reset" onclick="resetCalculator()">
+🔄 Reset
+</button>
+
+</div>
+
+</section>
+
+
+<!-- QUICK CALCULATOR -->
+
+<section class="box">
+
+<h2 class="title">⚡ Quick Conversion</h2>
+
+<div class="grid">
+
+<div class="field">
+<label>Inch</label>
+<input
+ id="quickInch"
+ type="number"
+ step="0.01"
+ placeholder="जैसे 36"
+ oninput="quickConvert()">
+</div>
+
+<div class="field">
+<label>Result</label>
+<input
+ id="quickResult"
+ readonly
+ placeholder="0 ft">
+</div>
+
+</div>
+
+<p class="note">
+1 फुट = 12 इंच<br>
+Square Feet = Length (ft) × Width (ft)
+</p>
+
+</section>
+
+
+<footer style="
+text-align:center;
+padding:30px 5px;
+color:#8999a8;
+">
+Safety Measurement Calculator
+</footer>
+
+</div>
+
+
+<script>
+
+function number(id){
+
+  const value=parseFloat(
+    document.getElementById(id).value
+  );
+
+  return isNaN(value) ? 0 : value;
+
+}
+
+
+function money(value){
+
+  return "₹" + value.toLocaleString(
+    "en-IN",
+    {
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    }
+  );
+
+}
+
+
+function calculate(){
+
+  const lengthInch=number("lengthInch");
+
+  const widthInch=number("widthInch");
+
+  const rate=number("rate");
+
+  let quantity=number("quantity");
+
+  if(quantity<=0){
+    quantity=1;
+  }
+
+
+  if(lengthInch<=0 || widthInch<=0){
+
+    alert("कृपया Length और Width डालें।");
+
+    return;
+
+  }
+
+
+  /* Inch → Feet */
+
+  const lengthFeet=lengthInch/12;
+
+  const widthFeet=widthInch/12;
+
+
+  /* Square Feet */
+
+  const singleArea=
+    lengthFeet*widthFeet;
+
+
+  const totalArea=
+    singleArea*quantity;
+
+
+  /* Price */
+
+  const totalPrice=
+    totalArea*rate;
+
+
+  /* Display */
+
+  document.getElementById("lengthFeet")
+    .textContent=
+    lengthFeet.toFixed(2)+" ft";
+
+
+  document.getElementById("widthFeet")
+    .textContent=
+    widthFeet.toFixed(2)+" ft";
+
+
+  document.getElementById("area")
+    .textContent=
+    singleArea.toFixed(2)+" sq.ft";
+
+
+  document.getElementById("totalArea")
+    .textContent=
+    totalArea.toFixed(2)+" sq.ft";
+
+
+  document.getElementById("rateShow")
+    .textContent=
+    money(rate);
+
+
+  document.getElementById("quantityShow")
+    .textContent=
+    quantity;
+
+
+  document.getElementById("totalPrice")
+    .textContent=
+    money(totalPrice);
+
+
+  document.getElementById("breakdown")
+    .innerHTML=`
+
+      <b>📐 Calculation Details</b><br>
+
+      ${lengthInch} inch ÷ 12
+      = ${lengthFeet.toFixed(2)} ft
+
+      <br>
+
+      ${widthInch} inch ÷ 12
+      = ${widthFeet.toFixed(2)} ft
+
+      <br>
+
+      ${lengthFeet.toFixed(2)} ×
+      ${widthFeet.toFixed(2)}
+      =
+      <b>${singleArea.toFixed(2)} sq.ft</b>
+
+      <br>
+
+      ${singleArea.toFixed(2)} ×
+      ${quantity}
+      =
+      <b>${totalArea.toFixed(2)} sq.ft</b>
+
+      <br>
+
+      ${totalArea.toFixed(2)} sq.ft ×
+      ${money(rate)} =
+      <b>${money(totalPrice)}</b>
+
+    `;
+
+}
+
+
+function quickConvert(){
+
+  const inch=number("quickInch");
+
+  const feet=inch/12;
+
+  document.getElementById("quickResult")
+    .value=
+    feet.toFixed(4)+" ft";
+
+}
+
+
+function resetCalculator(){
+
+  document.getElementById("lengthInch").value="";
+
+  document.getElementById("widthInch").value="";
+
+  document.getElementById("rate").value="";
+
+  document.getElementById("quantity").value="1";
+
+
+  document.getElementById("lengthFeet")
+    .textContent="0 ft";
+
+  document.getElementById("widthFeet")
+    .textContent="0 ft";
+
+  document.getElementById("area")
+    .textContent="0 sq.ft";
+
+  document.getElementById("totalArea")
+    .textContent="0 sq.ft";
+
+  document.getElementById("rateShow")
+    .textContent="₹0";
+
+  document.getElementById("quantityShow")
+    .textContent="0";
+
+  document.getElementById("totalPrice")
+    .textContent="₹0";
+
+  document.getElementById("breakdown")
+    .textContent=
+    "अभी measurement डालकर Calculate दबाएँ।";
+
+}
+
+
+/* Enter दबाने पर calculation */
+
+document.addEventListener("keydown",function(e){
+
+  if(e.key==="Enter"){
+
+    calculate();
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
