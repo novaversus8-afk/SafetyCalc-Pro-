@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Invisible Grill Measurement Pro</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:Arial,"Noto Sans Devanagari",sans-serif;
+background:linear-gradient(135deg,#06131f,#0c3449,#061d2b);
+color:#fff;
+min-height:100vh;
+}
+
+.container{
+width:min(900px,94%);
+margin:auto;
+padding:20px 0 50px;
+}
+
+header{
+text-align:center;
+padding:25px 5px;
+}
+
+header h1{
+font-size:clamp(28px,7vw,46px);
+}
+
+header p{
+color:#b9cbd8;
+margin-top:8px;
+}
+
+.box{
+background:#ffffff10;
+border:1px solid #ffffff20;
+border-radius:24px;
+padding:20px;
+margin-top:18px;
+box-shadow:0 15px 40px #0005;
+}
+
+h2{
+font-size:21px;
+margin-bottom:18px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:13px;
+}
+
+.field label{
+display:block;
+margin-bottom:7px;
+font-weight:bold;
+color:#dce8f1;
+}
+
+.field input,
+.field select{
+width:100%;
+padding:14px;
+border:0;
+outline:0;
+border-radius:13px;
+background:#fff;
+color:#17212a;
+font-size:17px;
+}
+
+.add{
+width:100%;
+margin-top:17px;
+padding:15px;
+border:0;
+border-radius:15px;
+background:#00c853;
+color:#fff;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.summary{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+}
+
+.stat{
+background:#ffffff10;
+padding:17px;
+border-radius:18px;
+}
+
+.stat small{
+color:#adbfcc;
+}
+
+.stat strong{
+display:block;
+font-size:25px;
+margin-top:7px;
+}
+
+.total{
+background:linear-gradient(135deg,#ff9f00,#ff5700);
+}
+
+.tableWrap{
+overflow-x:auto;
+margin-top:15px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:650px;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #ffffff18;
+text-align:center;
+}
+
+th{
+background:#ffffff12;
+}
+
+.delete{
+background:#e53935;
+color:#fff;
+padding:8px 11px;
+border-radius:9px;
+border:0;
+cursor:pointer;
+}
+
+.edit{
+background:#1976d2;
+color:#fff;
+padding:8px 11px;
+border-radius:9px;
+border:0;
+cursor:pointer;
+margin-right:5px;
+}
+
+.actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:18px;
+}
+
+.actions button{
+flex:1;
+min-width:150px;
+padding:13px;
+border:0;
+border-radius:13px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.print{
+background:#fff;
+color:#111;
+}
+
+.clear{
+background:#e53935;
+color:#fff;
+}
+
+.note{
+color:#aebdca;
+font-size:13px;
+line-height:1.6;
+margin-top:14px;
+}
+
+@media(max-width:650px){
+.grid{
+grid-template-columns:1fr;
+}
+
+.summary{
+grid-template-columns:1fr;
+}
+
+.tableWrap{
+overflow-x:auto;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+<h1>🛡️ Invisible Grill</h1>
+<p>Site Measurement Pro</p>
+</header>
+
+
+<!-- MEASUREMENT INPUT -->
+
+<section class="box">
+
+<h2>📐 नई Measurement</h2>
+
+<div class="grid">
+
+<div class="field">
+<label>नाम / Location</label>
+<input id="name" placeholder="जैसे Window 1">
+</div>
+
+<div class="field">
+<label>↔️ चौड़ाई (Inch)</label>
+<input id="width" type="number" step="0.01" placeholder="जैसे 60">
+</div>
+
+<div class="field">
+<label>📏 लंबाई (Inch)</label>
+<input id="length" type="number" step="0.01" placeholder="जैसे 40">
+</div>
+
+<div class="field">
+<label>📐 Height (Inch)</label>
+<input id="height" type="number" step="0.01" placeholder="जैसे 48">
+</div>
+
+<div class="field">
+<label>🔢 Quantity</label>
+<input id="quantity" type="number" min="1" value="1">
+</div>
+
+</div>
+
+<button class="add" onclick="addMeasurement()">
+➕ Measurement Add करें
+</button>
+
+<p class="note">
+हर Window/Balcony का measurement अलग add कर सकते हैं।
+</p>
+
+</section>
+
+
+<!-- SUMMARY -->
+
+<section class="box">
+
+<h2>📊 Total Measurement</h2>
+
+<div class="summary">
+
+<div class="stat">
+<small>Total Openings</small>
+<strong id="openingTotal">0</strong>
+</div>
+
+<div class="stat">
+<small>Total Width + Length</small>
+<strong id="horizontalTotal">0"</strong>
+</div>
+
+<div class="stat">
+<small>Total Height</small>
+<strong id="heightTotal">0"</strong>
+</div>
+
+<div class="stat">
+<small>Total Width</small>
+<strong id="widthTotal">0"</strong>
+</div>
+
+<div class="stat">
+<small>Total Length</small>
+<strong id="lengthTotal">0"</strong>
+</div>
+
+<div class="stat total">
+<small>Total Measurement</small>
+<strong id="grandTotal">0"</strong>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- RECORDS -->
+
+<section class="box">
+
+<h2>📝 Measurement Records</h2>
+
+<div class="tableWrap">
+
+<table>
+
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Width</th>
+<th>Length</th>
+<th>W + L</th>
+<th>Height</th>
+<th>Qty</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="records"></tbody>
+
+</table>
+
+</div>
+
+<div class="actions">
+
+<button class="print" onclick="printMeasurement()">
+🖨️ Print Measurement
+</button>
+
+<button class="clear" onclick="clearAll()">
+🗑️ Clear All
+</button>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+let measurements=
+JSON.parse(
+localStorage.getItem("invisibleGrillMeasurements")||"[]"
+);
+
+let editIndex=-1;
+
+
+/* =========================
+ NUMBER
+========================= */
+
+function number(id){
+
+const value=
+parseFloat(
+document.getElementById(id).value
+);
+
+return Number.isFinite(value)?value:0;
+
+}
+
+
+/* =========================
+ ADD / UPDATE
+========================= */
+
+function addMeasurement(){
+
+const name=
+document.getElementById("name").value.trim()
+||`Opening ${measurements.length+1}`;
+
+const width=number("width");
+const length=number("length");
+const height=number("height");
+
+let quantity=number("quantity");
+
+if(quantity<1)quantity=1;
+
+if(width<=0 || length<=0 || height<=0){
+
+alert(
+"Width, Length और Height भरें।"
+);
+
+return;
+
+}
+
+
+const data={
+name:name,
+width:width,
+length:length,
+height:height,
+quantity:quantity
+};
+
+
+if(editIndex===-1){
+
+measurements.push(data);
+
+}else{
+
+measurements[editIndex]=data;
+
+editIndex=-1;
+
+}
+
+
+save();
+
+render();
+
+resetForm();
+
+}
+
+
+/* =========================
+ SAVE
+========================= */
+
+function save(){
+
+localStorage.setItem(
+"invisibleGrillMeasurements",
+JSON.stringify(measurements)
+);
+
+}
+
+
+/* =========================
+ RENDER TABLE
+========================= */
+
+function render(){
+
+const tbody=
+document.getElementById("records");
+
+tbody.innerHTML="";
+
+let totalWidth=0;
+let totalLength=0;
+let totalHeight=0;
+let totalHorizontal=0;
+let totalOpenings=0;
+
+measurements.forEach((item,index)=>{
+
+const horizontal=
+item.width+item.length;
+
+const widthAll=
+item.width*item.quantity;
+
+const lengthAll=
+item.length*item.quantity;
+
+const heightAll=
+item.height*item.quantity;
+
+const horizontalAll=
+horizontal*item.quantity;
+
+totalWidth+=widthAll;
+totalLength+=lengthAll;
+totalHeight+=heightAll;
+totalHorizontal+=horizontalAll;
+totalOpenings+=item.quantity;
+
+
+const row=
+document.createElement("tr");
+
+row.innerHTML=`
+
+<td>${index+1}</td>
+
+<td>${escapeHTML(item.name)}</td>
+
+<td>${item.width.toFixed(2)}"</td>
+
+<td>${item.length.toFixed(2)}"</td>
+
+<td><b>${horizontal.toFixed(2)}"</b></td>
+
+<td>${item.height.toFixed(2)}"</td>
+
+<td>${item.quantity}</td>
+
+<td>
+
+<button
+class="edit"
+onclick="editMeasurement(${index})">
+Edit
+</button>
+
+<button
+class="delete"
+onclick="deleteMeasurement(${index})">
+Delete
+</button>
+
+</td>
+
+`;
+
+tbody.appendChild(row);
+
+});
+
+
+document.getElementById("openingTotal")
+.textContent=totalOpenings;
+
+document.getElementById("horizontalTotal")
+.textContent=totalHorizontal.toFixed(2)+'"';
+
+document.getElementById("heightTotal")
+.textContent=totalHeight.toFixed(2)+'"';
+
+document.getElementById("widthTotal")
+.textContent=totalWidth.toFixed(2)+'"';
+
+document.getElementById("lengthTotal")
+.textContent=totalLength.toFixed(2)+'"';
+
+document.getElementById("grandTotal")
+.textContent=
+(
+totalHorizontal+
+totalHeight
+).toFixed(2)+'"';
+
+}
+
+
+/* =========================
+ EDIT
+========================= */
+
+function editMeasurement(index){
+
+const item=measurements[index];
+
+document.getElementById("name").value=
+item.name;
+
+document.getElementById("width").value=
+item.width;
+
+document.getElementById("length").value=
+item.length;
+
+document.getElementById("height").value=
+item.height;
+
+document.getElementById("quantity").value=
+item.quantity;
+
+editIndex=index;
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+/* =========================
+ DELETE
+========================= */
+
+function deleteMeasurement(index){
+
+if(!confirm("यह measurement delete करें?"))
+return;
+
+measurements.splice(index,1);
+
+save();
+
+render();
+
+}
+
+
+/* =========================
+ RESET INPUT
+========================= */
+
+function resetForm(){
+
+document.getElementById("name").value="";
+
+document.getElementById("width").value="";
+
+document.getElementById("length").value="";
+
+document.getElementById("height").value="";
+
+document.getElementById("quantity").value="1";
+
+}
+
+
+/* =========================
+ CLEAR ALL
+========================= */
+
+function clearAll(){
+
+if(!measurements.length)return;
+
+if(
+!confirm(
+"सभी measurements delete करें?"
+)
+)return;
+
+measurements=[];
+
+save();
+
+render();
+
+resetForm();
+
+}
+
+
+/* =========================
+ PRINT
+========================= */
+
+function printMeasurement(){
+
+window.print();
+
+}
+
+
+/* =========================
+ SAFE TEXT
+========================= */
+
+function escapeHTML(text){
+
+return text
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
+/* =========================
+ START
+========================= */
+
+render();
+
+</script>
+
+</body>
+</html>
